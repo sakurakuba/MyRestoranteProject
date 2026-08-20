@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le Petit Bistro — French Restaurant</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="logo">Le Petit Bistro</div>
+    <nav>
+      <a href="#menu">Menu</a>
+      <a href="#order">Order</a>
+      <a href="#book">Book a Table</a>
+    </nav>
+    <div class="auth-area" id="authArea">
+      <button class="auth-btn" id="loginToggle">Log In</button>
+      <button class="auth-btn" id="registerToggle">Sign Up</button>
+    </div>
+    <button class="cart-btn" id="cartToggle">🛒 Cart (<span id="cartCount">0</span>)</button>
+  </div>
+</header>
+
+<div class="auth-modal-overlay" id="authOverlay">
+  <div class="auth-modal">
+    <button class="auth-modal-close" id="authModalClose">✕</button>
+
+    <div id="loginPane">
+      <h3>Log In</h3>
+      <form id="loginForm">
+        <label>Email
+          <input type="email" id="loginEmail" required>
+        </label>
+        <label>Password
+          <input type="password" id="loginPassword" required>
+        </label>
+        <p class="form-error" id="loginError"></p>
+        <button type="submit" class="btn btn-primary">Log In</button>
+      </form>
+      <p class="switch-link">No account? <a href="#" id="switchToRegister">Sign up</a></p>
+    </div>
+
+    <div id="registerPane" style="display:none">
+      <h3>Sign Up</h3>
+      <p class="demo-note">Logged-in members get 10% off every order automatically.</p>
+      <form id="registerForm">
+        <label>Full Name
+          <input type="text" id="registerName" required>
+        </label>
+        <label>Email
+          <input type="email" id="registerEmail" required>
+        </label>
+        <label>Password
+          <input type="password" id="registerPassword" required minlength="6">
+        </label>
+        <p class="form-error" id="registerError"></p>
+        <button type="submit" class="btn btn-primary">Create Account</button>
+      </form>
+      <p class="switch-link">Already have an account? <a href="#" id="switchToLogin">Log in</a></p>
+    </div>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="container">
+    <h1>Authentic French Cuisine</h1>
+    <p>Fresh, seasonal dishes made the traditional way. Order for take-out or reserve a table.</p>
+    <a href="#menu" class="btn btn-primary">View Menu</a>
+  </div>
+</section>
+
+<section id="menu" class="section">
+  <div class="container">
+    <h2>Our Menu</h2>
+
+    <h3 class="menu-category">Entrées</h3>
+    <div class="menu-grid" id="menu-entrees"></div>
+
+    <h3 class="menu-category">Plats Principaux</h3>
+    <div class="menu-grid" id="menu-plats"></div>
+
+    <h3 class="menu-category">Desserts</h3>
+    <div class="menu-grid" id="menu-desserts"></div>
+
+    <h3 class="menu-category">Boissons</h3>
+    <div class="menu-grid" id="menu-boissons"></div>
+  </div>
+</section>
+
+<section id="order" class="section alt">
+  <div class="container">
+    <h2>Your Order (Take-Out)</h2>
+    <div id="cartItems" class="cart-items">
+      <p class="empty-msg">Your cart is empty. Add items from the menu above.</p>
+    </div>
+    <div class="cart-total" id="cartTotal" style="display:none">
+      <div class="totals-line">Subtotal: <span id="cartSubtotalAmount">$0.00</span></div>
+      <div class="totals-line discount-line" id="discountLine" style="display:none">Member discount (10%): <span id="cartDiscountAmount">-$0.00</span></div>
+      <div class="totals-line grand-total">Total: <span id="cartTotalAmount">$0.00</span></div>
+      <p class="discount-hint" id="discountHint">Log in to get 10% off this order.</p>
+    </div>
+
+    <div id="checkoutForm" class="form-box" style="display:none">
+      <h3>Checkout</h3>
+      <form id="orderForm">
+        <label>Full Name
+          <input type="text" id="orderName" required>
+        </label>
+        <label>Phone Number
+          <input type="tel" id="orderPhone" required placeholder="(555) 555-5555">
+        </label>
+        <label>Pickup Time
+          <input type="time" id="orderPickup" required>
+        </label>
+
+        <fieldset class="payment-box">
+          <legend>Payment (Demo Only)</legend>
+          <p class="demo-note">⚠️ This is a demo form — no real payment is processed and no card data is transmitted or stored.</p>
+          <label>Card Number
+            <input type="text" id="cardNumber" placeholder="4242 4242 4242 4242" maxlength="19" required>
+          </label>
+          <div class="row-2">
+            <label>Expiry
+              <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" required>
+            </label>
+            <label>CVC
+              <input type="text" id="cardCvc" placeholder="123" maxlength="4" required>
+            </label>
+          </div>
+        </fieldset>
+
+        <button type="submit" class="btn btn-primary">Place Order &amp; Pay</button>
+      </form>
+    </div>
+
+    <div id="orderConfirmation" class="confirmation" style="display:none"></div>
+  </div>
+</section>
+
+<section id="book" class="section">
+  <div class="container">
+    <h2>Book a Table</h2>
+    <form id="bookingForm" class="form-box">
+      <label>Full Name
+        <input type="text" id="bookName" required>
+      </label>
+      <label>Phone Number
+        <input type="tel" id="bookPhone" required placeholder="(555) 555-5555">
+      </label>
+      <div class="row-2">
+        <label>Number of Guests
+          <input type="number" id="bookGuests" min="1" max="20" value="2" required>
+        </label>
+        <label>Date
+          <input type="date" id="bookDate" required>
+        </label>
+      </div>
+      <label>Time
+        <input type="time" id="bookTime" required>
+      </label>
+      <button type="submit" class="btn btn-primary">Reserve Table</button>
+    </form>
+    <div id="bookingConfirmation" class="confirmation" style="display:none"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>Le Petit Bistro · 12 Rue de Paris · (555) 123-4567</p>
+    <p class="small">Demo restaurant website. All orders and payments are simulated for demonstration purposes.</p>
+  </div>
+</footer>
+
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-header">
+    <h3>Your Cart</h3>
+    <button id="closeCart">✕</button>
+  </div>
+  <div id="drawerItems" class="drawer-items"></div>
+  <div class="drawer-footer">
+    <div class="drawer-total">Total: <span id="drawerTotal">$0.00</span></div>
+    <a href="#order" class="btn btn-primary" id="goToOrder">Go to Checkout</a>
+  </div>
+</div>
+<div class="cart-overlay" id="cartOverlay"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
