@@ -65,7 +65,18 @@ Format: `ID | Title | Preconditions | Steps | Expected Result | Priority`
 | TC-BOOK-12 | Guest booking has no user_id | Not logged in | POST booking, inspect DB row | `user_id` is NULL | Medium |
 | TC-BOOK-13 | Unauthenticated access to booking history | Not logged in | GET /api/bookings/mine | 401 | Medium |
 
-## 4. Cross-Cutting / Session Security
+## 4. Menu Item Images
+
+| ID | Title | Preconditions | Steps | Expected Result | Priority |
+|---|---|---|---|---|---|
+| TC-IMG-01 | Every menu item has an image field | — | GET /api/menu, inspect every item across all 4 categories | Each item has a non-empty `image` field (URL path) | High |
+| TC-IMG-02 | Each menu image URL is reachable | — | GET every item's `image` URL from the API response | Each request returns 200 | Critical |
+| TC-IMG-03 | Menu image response has an image content-type | — | Inspect `Content-Type` header of each image response | Content-Type starts with `image/` | Medium |
+| TC-IMG-04 | Image count matches item count | — | Count items returned by /api/menu vs. distinct image URLs | One unique image per item (no missing/shared placeholder across different dishes) | Medium |
+| TC-IMG-05 | Requesting a non-existent image returns 404 | — | GET /images/does-not-exist.svg | 404, no server crash | Low |
+| TC-IMG-06 | Rendered menu card shows the image with correct alt text | Frontend loaded in browser | Load `/`, inspect each `.menu-item img` element | `src` matches the item's API `image` field; `alt` matches the item's name | Medium |
+
+## 5. Cross-Cutting / Session Security
 
 | ID | Title | Preconditions | Steps | Expected Result | Priority |
 |---|---|---|---|---|---|

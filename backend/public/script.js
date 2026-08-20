@@ -54,6 +54,7 @@ function renderMenu() {
     const el = document.getElementById(elId);
     el.innerHTML = items.map((item) => `
       <div class="menu-item">
+        <img class="menu-item-img" src="${item.image}" alt="${escapeHtml(item.name)}" loading="lazy">
         <h4>${item.name}</h4>
         <p class="desc">${item.desc}</p>
         <div class="price-row">

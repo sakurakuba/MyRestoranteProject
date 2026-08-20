@@ -1,24 +1,24 @@
 # QA Test Report — Le Petit Bistro
 
-**Feature under test:** User accounts, online take-out ordering, 10% logged-in-member discount, table booking
-**Test basis:** [test-cases.md](test-cases.md) (50 documented test cases)
-**Test method:** Automated black-box API testing ([run-tests.js](run-tests.js)) against a live local server, plus manual browser verification for UI/XSS rendering
+**Feature under test:** User accounts, online take-out ordering, 10% logged-in-member discount, table booking, menu item images
+**Test basis:** [test-cases.md](test-cases.md) (56 documented test cases)
+**Test method:** Automated black-box API testing ([run-tests.js](run-tests.js)) against a live local server, plus manual browser verification for UI/XSS rendering and image `src`/`alt` correctness
 **Environment:** Node.js v26.0.0, Express, SQLite (`node:sqlite`), localhost:3000, fresh database per run
-**Run date:** 2026-08-20
+**Run date:** 2026-08-20 (updated for menu image feature)
 **Tester:** Claude (AI QA), on behalf of ksulaymanov@gmail.com
 
 ## Summary
 
 | Metric | Value |
 |---|---|
-| Total test cases | 50 |
-| Passed (final run) | 50 |
+| Total test cases | 56 (55 automated + 1 manual browser check) |
+| Passed (final run) | 56 |
 | Failed (final run) | 0 |
-| Defects found during testing | 1 (Critical — XSS) |
+| Defects found during testing | 1 (Critical — XSS, found in an earlier pass) |
 | Defects fixed | 1 / 1 |
 | Defects open | 0 |
 
-All 50 cases pass on the final run. **One critical defect was found during the first pass, fixed immediately, and re-verified** — see Defects below. Numbers below reflect the *first* run (before the fix) where relevant, and the *final* re-run (50/50) after the fix.
+All 56 cases pass on the final run, including 6 new cases (TC-IMG-01…06) added for the menu item images feature. **One critical defect (stored/DOM XSS) was found in an earlier testing pass, fixed immediately, and re-verified** — see Defects below.
 
 ## Defects Found
 
@@ -51,6 +51,7 @@ No other defects were found. All boundary, negative, and security-adjacent cases
 - **Data isolation:** Order and booking history endpoints (`/api/orders/mine`, `/api/bookings/mine`) are user-scoped and return 401 when unauthenticated; one user's orders never leak into another's history (verified with two independently registered accounts).
 - **Input validation:** All numeric boundaries (quantity 1–50, guests 1–20), date/time formats, and required fields are enforced server-side, not just in the UI.
 - **Guest vs. member booking linkage:** verified directly against the SQLite `bookings` table — guest bookings have `user_id = NULL`, logged-in bookings correctly store the member's `user_id`.
+- **Menu images:** all 18 menu items (across all 4 categories) have a unique, reachable image (`image/svg+xml`, HTTP 200); a request for a non-existent image correctly 404s; and the rendered page's `<img>` `src`/`alt` for every item match the API's `image`/`name` fields exactly (verified in-browser against the live DOM, not just the API).
 
 ## Full Results
 
@@ -103,6 +104,12 @@ No other defects were found. All boundary, negative, and security-adjacent cases
 | TC-BOOK-11 | Booking linked to logged-in user | ✅ PASS | appears in `/mine` |
 | TC-BOOK-12 | Guest booking has no user_id | ✅ PASS | verified via direct DB query |
 | TC-BOOK-13 | Unauthenticated access to booking history | ✅ PASS | status=401 |
+| TC-IMG-01 | Every menu item has an image field | ✅ PASS | 18/18 items have `image` |
+| TC-IMG-02 | Each menu image URL is reachable | ✅ PASS | 18/18 return 200 |
+| TC-IMG-03 | Menu image response has an image content-type | ✅ PASS | `image/svg+xml` |
+| TC-IMG-04 | Image count matches item count | ✅ PASS | 18 items, 18 unique images |
+| TC-IMG-05 | Non-existent image returns 404 | ✅ PASS | status=404 |
+| TC-IMG-06 | Rendered menu card image matches API (src/alt) | ✅ PASS | 18/18 `<img>` tags match, 0 mismatches (manual browser check) |
 | TC-SEC-01 | Session cookie is httpOnly | ✅ PASS | `HttpOnly` flag present |
 | TC-SEC-02 | Static file serving works | ✅ PASS | status=200 |
 | TC-SEC-03 | Unknown API route returns 404 | ✅ PASS | status=404 |

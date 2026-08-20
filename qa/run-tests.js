@@ -286,6 +286,33 @@ async function main() {
     record('TC-BOOK-13', 'Unauthenticated access to booking history', r.status === 401, `status=${r.status}`);
   }
 
+  // ---------------- MENU IMAGES ----------------
+  const menuRes = await guest.req('/api/menu');
+  const allMenuItems = Object.values(menuRes.body.menu).flat();
+  {
+    const missing = allMenuItems.filter((it) => !it.image || typeof it.image !== 'string' || it.image.trim() === '');
+    record('TC-IMG-01', 'Every menu item has an image field', missing.length === 0, `checked=${allMenuItems.length} missing=${missing.length}`);
+  }
+  {
+    const checks = await Promise.all(allMenuItems.map(async (it) => {
+      const res = await fetch(BASE + it.image);
+      return { id: it.id, status: res.status, contentType: res.headers.get('content-type') || '' };
+    }));
+    const notOk = checks.filter((c) => c.status !== 200);
+    record('TC-IMG-02', 'Each menu image URL is reachable (200)', notOk.length === 0, `checked=${checks.length} failing=${JSON.stringify(notOk)}`);
+
+    const badType = checks.filter((c) => !c.contentType.startsWith('image/'));
+    record('TC-IMG-03', 'Menu image response has an image content-type', badType.length === 0, `contentTypes=${[...new Set(checks.map(c => c.contentType))]}`);
+  }
+  {
+    const uniqueImages = new Set(allMenuItems.map((it) => it.image));
+    record('TC-IMG-04', 'Image count matches item count (one unique image per item)', uniqueImages.size === allMenuItems.length, `items=${allMenuItems.length} uniqueImages=${uniqueImages.size}`);
+  }
+  {
+    const res = await fetch(BASE + '/images/does-not-exist.svg');
+    record('TC-IMG-05', 'Requesting a non-existent image returns 404', res.status === 404, `status=${res.status}`);
+  }
+
   // ---------------- SECURITY / CROSS-CUTTING ----------------
   {
     const s = new Session();

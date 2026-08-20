@@ -30,7 +30,10 @@ const MENU = {
 
 const ITEMS_BY_ID = new Map();
 for (const category of Object.values(MENU)) {
-  for (const item of category) ITEMS_BY_ID.set(item.id, item);
+  for (const item of category) {
+    item.image = `/images/${item.id}.svg`;
+    ITEMS_BY_ID.set(item.id, item);
+  }
 }
 
 function getItem(id) {

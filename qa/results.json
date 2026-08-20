@@ -1,0 +1,336 @@
+[
+  {
+    "id": "TC-AUTH-01",
+    "title": "Register with valid data",
+    "pass": true,
+    "details": "status=201"
+  },
+  {
+    "id": "TC-AUTH-02",
+    "title": "Register with missing fields",
+    "pass": true,
+    "details": "status=400 body={\"error\":\"Missing required field(s): name\"}"
+  },
+  {
+    "id": "TC-AUTH-03",
+    "title": "Register with invalid email format",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-AUTH-04",
+    "title": "Register with short password",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-AUTH-05",
+    "title": "Register with duplicate email",
+    "pass": true,
+    "details": "status=409"
+  },
+  {
+    "id": "TC-AUTH-06",
+    "title": "Duplicate email is case-insensitive",
+    "pass": true,
+    "details": "status=409"
+  },
+  {
+    "id": "TC-AUTH-07",
+    "title": "Login with correct credentials",
+    "pass": {
+      "id": 1,
+      "name": "Alice Martin",
+      "email": "alice.nntm83@example.com"
+    },
+    "details": "status=200"
+  },
+  {
+    "id": "TC-AUTH-08",
+    "title": "Login with wrong password",
+    "pass": true,
+    "details": "status=401"
+  },
+  {
+    "id": "TC-AUTH-09",
+    "title": "Login with non-existent email",
+    "pass": true,
+    "details": "status=401"
+  },
+  {
+    "id": "TC-AUTH-10",
+    "title": "Login missing fields",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-AUTH-11",
+    "title": "/me without session",
+    "pass": true,
+    "details": "status=200 body={\"user\":null}"
+  },
+  {
+    "id": "TC-AUTH-12",
+    "title": "/me with valid session",
+    "pass": true,
+    "details": "status=200"
+  },
+  {
+    "id": "TC-AUTH-13",
+    "title": "Logout clears session",
+    "pass": true,
+    "details": "body={\"user\":null}"
+  },
+  {
+    "id": "TC-AUTH-14",
+    "title": "SQL injection attempt in login email",
+    "pass": true,
+    "details": "status=401 body={\"error\":\"Invalid email or password\"}"
+  },
+  {
+    "id": "TC-AUTH-15",
+    "title": "Concurrent duplicate registration",
+    "pass": true,
+    "details": "statuses=201,409"
+  },
+  {
+    "id": "TC-ORD-01",
+    "title": "Guest order — full price",
+    "pass": true,
+    "details": "status=201 body={\"id\":1,\"items\":[{\"id\":\"p4\",\"name\":\"Steak Frites\",\"price\":25,\"qty\":1},{\"id\":\"d1\",\"name\":\"Crème Brûlée\",\"price\":8.5,\"qty\":1}],\"subtotal\":33.5,\"discount\":0,\"total\":33.5,\"discountApplied\":false,\"pickup\":\"18:00\"}"
+  },
+  {
+    "id": "TC-ORD-02",
+    "title": "Logged-in order — 10% discount",
+    "pass": true,
+    "details": "status=201 body={\"id\":2,\"items\":[{\"id\":\"p4\",\"name\":\"Steak Frites\",\"price\":25,\"qty\":1},{\"id\":\"d1\",\"name\":\"Crème Brûlée\",\"price\":8.5,\"qty\":1}],\"subtotal\":33.5,\"discount\":3.35,\"total\":30.15,\"discountApplied\":true,\"pickup\":\"18:30\"}"
+  },
+  {
+    "id": "TC-ORD-03",
+    "title": "Discount math accuracy ($33.50 -> $3.35 off -> $30.15)",
+    "pass": true,
+    "details": "subtotal=33.5 discount=3.35 total=30.15"
+  },
+  {
+    "id": "TC-ORD-04",
+    "title": "Price tampering ignored (server recomputes from menu)",
+    "pass": true,
+    "details": "returned price=25"
+  },
+  {
+    "id": "TC-ORD-05",
+    "title": "Discount tampering ignored (guest gets full price regardless of body)",
+    "pass": true,
+    "details": "body={\"id\":4,\"items\":[{\"id\":\"p4\",\"name\":\"Steak Frites\",\"price\":25,\"qty\":1},{\"id\":\"d1\",\"name\":\"Crème Brûlée\",\"price\":8.5,\"qty\":1}],\"subtotal\":33.5,\"discount\":0,\"total\":33.5,\"discountApplied\":false,\"pickup\":\"19:05\"}"
+  },
+  {
+    "id": "TC-ORD-06",
+    "title": "Empty cart rejected",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-ORD-07",
+    "title": "Missing items field",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-ORD-08",
+    "title": "Unknown item id",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-ORD-09",
+    "title": "Quantity = 0",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-ORD-10",
+    "title": "Negative quantity",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-ORD-11",
+    "title": "Non-integer quantity",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-ORD-12",
+    "title": "Quantity at upper boundary (50) accepted",
+    "pass": true,
+    "details": "status=201"
+  },
+  {
+    "id": "TC-ORD-13",
+    "title": "Quantity over upper boundary (51) rejected",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-ORD-14",
+    "title": "Missing name/phone/pickup",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-ORD-15",
+    "title": "Invalid pickup time format",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-ORD-16",
+    "title": "Order persisted with correct owner (discount recorded)",
+    "pass": true,
+    "details": "count=1"
+  },
+  {
+    "id": "TC-ORD-17",
+    "title": "Orders are user-scoped (no cross-user leakage)",
+    "pass": true,
+    "details": "bOrders=1 leaked=false"
+  },
+  {
+    "id": "TC-ORD-18",
+    "title": "Unauthenticated access to order history",
+    "pass": true,
+    "details": "status=401"
+  },
+  {
+    "id": "TC-ORD-19",
+    "title": "XSS payload in customer name (server accepts; frontend must escape on render)",
+    "pass": true,
+    "details": "status=201 — see manual frontend-escaping check below"
+  },
+  {
+    "id": "TC-BOOK-01",
+    "title": "Valid booking",
+    "pass": true,
+    "details": "status=201"
+  },
+  {
+    "id": "TC-BOOK-02",
+    "title": "Guests lower boundary valid (1)",
+    "pass": true,
+    "details": "status=201"
+  },
+  {
+    "id": "TC-BOOK-03",
+    "title": "Guests upper boundary valid (20)",
+    "pass": true,
+    "details": "status=201"
+  },
+  {
+    "id": "TC-BOOK-04",
+    "title": "Guests = 0 rejected",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-BOOK-05",
+    "title": "Guests over max (21) rejected",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-BOOK-06",
+    "title": "Non-integer guests rejected",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-BOOK-07",
+    "title": "Missing required fields",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-BOOK-08",
+    "title": "Invalid date format",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-BOOK-09",
+    "title": "Invalid time format",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-BOOK-10",
+    "title": "Past date/time rejected",
+    "pass": true,
+    "details": "status=400"
+  },
+  {
+    "id": "TC-BOOK-11",
+    "title": "Booking linked to logged-in user",
+    "pass": true,
+    "details": "mineCount=1"
+  },
+  {
+    "id": "TC-BOOK-12",
+    "title": "Guest booking has no user_id (verified via DB query)",
+    "pass": true,
+    "details": "see report notes / DB spot check"
+  },
+  {
+    "id": "TC-BOOK-13",
+    "title": "Unauthenticated access to booking history",
+    "pass": true,
+    "details": "status=401"
+  },
+  {
+    "id": "TC-IMG-01",
+    "title": "Every menu item has an image field",
+    "pass": true,
+    "details": "checked=18 missing=0"
+  },
+  {
+    "id": "TC-IMG-02",
+    "title": "Each menu image URL is reachable (200)",
+    "pass": true,
+    "details": "checked=18 failing=[]"
+  },
+  {
+    "id": "TC-IMG-03",
+    "title": "Menu image response has an image content-type",
+    "pass": true,
+    "details": "contentTypes=image/svg+xml"
+  },
+  {
+    "id": "TC-IMG-04",
+    "title": "Image count matches item count (one unique image per item)",
+    "pass": true,
+    "details": "items=18 uniqueImages=18"
+  },
+  {
+    "id": "TC-IMG-05",
+    "title": "Requesting a non-existent image returns 404",
+    "pass": true,
+    "details": "status=404"
+  },
+  {
+    "id": "TC-SEC-01",
+    "title": "Session cookie is httpOnly",
+    "pass": true,
+    "details": "set-cookie=connect.sid=s%3AgA4Mz7Kv5i3S058nUrNgxZOB7_ulZGL2.ASs4Lt1VU3%2FI0fepL1qD7sehMwSyMcp3K352o4uzWDg; Path=/; Expires=Fri, 21 Aug 2026 17:28:17 GMT; HttpOnly; SameSite=Lax"
+  },
+  {
+    "id": "TC-SEC-02",
+    "title": "Static file serving works",
+    "pass": true,
+    "details": "status=200"
+  },
+  {
+    "id": "TC-SEC-03",
+    "title": "Unknown API route returns 404",
+    "pass": true,
+    "details": "status=404"
+  }
+]

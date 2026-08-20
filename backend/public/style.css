@@ -205,6 +205,14 @@ a { color: inherit; }
   padding: 16px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+.menu-item-img {
+  width: calc(100% + 32px);
+  margin: -16px -16px 12px;
+  height: 130px;
+  object-fit: cover;
+  display: block;
 }
 .menu-item h4 {
   margin: 0 0 6px;
